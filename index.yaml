@@ -30,4 +30,69 @@ entries:
     urls:
     - https://github.com/htuomola/helm-charts/releases/download/common-1.2.0/common-1.2.0.tgz
     version: 1.2.0
-generated: "2023-10-08T09:49:20.220271913Z"
+  home-assistant:
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: changed
+          description: Upgraded `common` chart dependency to version 4.5.2
+    apiVersion: v2
+    appVersion: 2022.5.4
+    created: "2023-10-08T10:00:44.305755061Z"
+    dependencies:
+    - name: common
+      repository: https://library-charts.k8s-at-home.com
+      version: 4.5.2
+    description: Home Assistant
+    digest: ff92e48c9084e74d45a917ea87ebe831c19e019a762b03fb76d4d42bf677446e
+    home: https://github.com/k8s-at-home/charts/tree/master/charts/stable/home-assistant
+    icon: https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Home_Assistant_Logo.svg/519px-Home_Assistant_Logo.svg.png
+    keywords:
+    - home-assistant
+    - hass
+    - homeassistant
+    kubeVersion: '>=1.16.0-0'
+    maintainers:
+    - email: htuomola@gmail.com
+      name: henrit
+    name: home-assistant
+    sources:
+    - https://github.com/home-assistant/home-assistant
+    - https://github.com/cdr/code-server
+    urls:
+    - https://github.com/htuomola/helm-charts/releases/download/home-assistant-14.0.0/home-assistant-14.0.0.tgz
+    version: 14.0.0
+  unifi:
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: changed
+          description: Upgraded `common` chart dependency to version 4.5.2
+    apiVersion: v2
+    appVersion: v7.1.68
+    created: "2023-10-08T10:00:44.46804876Z"
+    dependencies:
+    - name: common
+      repository: https://library-charts.k8s-at-home.com
+      version: 4.5.2
+    - condition: mongodb.enabled
+      name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.1.22
+    description: Ubiquiti Network's Unifi Controller
+    digest: 75ad181ba2a66cf7eef1914f7eac6fc609b8bf3aaf258784f4a061498d1d7639
+    home: https://github.com/k8s-at-home/charts/tree/master/charts/stable/unifi
+    icon: https://prd-www-cdn.ubnt.com/static/favicon-152.png
+    keywords:
+    - ubiquiti
+    - unifi
+    maintainers:
+    - email: jeff@billimek.com
+      name: billimek
+    - email: mike@quadra-tec.net
+      name: mcronce
+    name: unifi
+    sources:
+    - https://github.com/jacobalberty/unifi-docker
+    urls:
+    - https://github.com/htuomola/helm-charts/releases/download/unifi-5.1.2/unifi-5.1.2.tgz
+    version: 5.1.2
+generated: "2023-10-08T10:00:44.46805726Z"
