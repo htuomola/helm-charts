@@ -33,4 +33,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Credits
 
-This repo is a for of the original repository bjw-s's (similar repository)[https://bjw-s.github.io/helm-charts/docs/]
+This repo is a for of the original repository bjw-s's [similar repository](https://bjw-s.github.io/helm-charts/docs/)
