@@ -51,6 +51,36 @@ entries:
     urls:
     - https://github.com/htuomola/helm-charts/releases/download/common-1.2.0/common-1.2.0.tgz
     version: 1.2.0
+  esphome:
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: changed
+          description: Upgraded `common` chart dependency to version 4.5.2
+    apiVersion: v2
+    appVersion: 1.18.0
+    created: "2023-10-08T10:50:03.150782093Z"
+    dependencies:
+    - name: common
+      repository: https://library-charts.k8s-at-home.com
+      version: 4.5.2
+    description: ESPHome is a system to control your ESP8266/ESP32 by simple yet powerful
+      configuration files and control them remotely through Home Automation systems.
+    digest: 9db63436e00ab50cae0fc172ce6820e1e87db2af5681612e84a57e8b80d611e3
+    home: https://github.com/k8s-at-home/charts/tree/master/charts/stable/esphome
+    icon: https://raw.githubusercontent.com/esphome/esphome-docs/v1.16.2/_static/favicon-256x256.png
+    keywords:
+    - esphome
+    - home-automation
+    kubeVersion: '>=1.16.0-0'
+    maintainers:
+    - email: jeff@billimek.com
+      name: billimek
+    name: esphome
+    sources:
+    - https://github.com/esphome/esphome
+    urls:
+    - https://github.com/htuomola/helm-charts/releases/download/esphome-8.4.2/esphome-8.4.2.tgz
+    version: 8.4.2
   home-assistant:
   - annotations:
       artifacthub.io/changes: |-
@@ -179,4 +209,4 @@ entries:
     urls:
     - https://github.com/htuomola/helm-charts/releases/download/unifi-5.1.2/unifi-5.1.2.tgz
     version: 5.1.2
-generated: "2023-10-08T10:08:29.294575338Z"
+generated: "2023-10-08T10:50:03.150792793Z"
