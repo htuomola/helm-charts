@@ -58,6 +58,36 @@ entries:
           description: Upgraded `common` chart dependency to version 4.5.2
     apiVersion: v2
     appVersion: 2022.5.4
+    created: "2023-10-08T10:08:29.163951905Z"
+    dependencies:
+    - name: common
+      repository: https://htuomola.github.io/helm-charts
+      version: 4.5.2
+    description: Home Assistant
+    digest: 4fc7f9c1b96ee1948b16a1cb11e96b52e2b9d2aad5a033c49663276f6404fe7a
+    home: https://github.com/k8s-at-home/charts/tree/master/charts/stable/home-assistant
+    icon: https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Home_Assistant_Logo.svg/519px-Home_Assistant_Logo.svg.png
+    keywords:
+    - home-assistant
+    - hass
+    - homeassistant
+    kubeVersion: '>=1.16.0-0'
+    maintainers:
+    - email: htuomola@gmail.com
+      name: htuomola
+    name: home-assistant
+    sources:
+    - https://github.com/home-assistant/home-assistant
+    - https://github.com/cdr/code-server
+    urls:
+    - https://github.com/htuomola/helm-charts/releases/download/home-assistant-14.0.1/home-assistant-14.0.1.tgz
+    version: 14.0.1
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: changed
+          description: Upgraded `common` chart dependency to version 4.5.2
+    apiVersion: v2
+    appVersion: 2022.5.4
     created: "2023-10-08T10:00:44.305755061Z"
     dependencies:
     - name: common
@@ -83,6 +113,39 @@ entries:
     - https://github.com/htuomola/helm-charts/releases/download/home-assistant-14.0.0/home-assistant-14.0.0.tgz
     version: 14.0.0
   unifi:
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: changed
+          description: Upgraded `common` chart dependency to version 4.5.2
+    apiVersion: v2
+    appVersion: v7.1.68
+    created: "2023-10-08T10:08:29.294561938Z"
+    dependencies:
+    - name: common
+      repository: https://htuomola.github.io/helm-charts
+      version: 4.5.2
+    - condition: mongodb.enabled
+      name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.1.22
+    description: Ubiquiti Network's Unifi Controller
+    digest: 60335fa20faabc7a839348213796d3f83db4ca6b03166e6de298b786b336ff22
+    home: https://github.com/k8s-at-home/charts/tree/master/charts/stable/unifi
+    icon: https://prd-www-cdn.ubnt.com/static/favicon-152.png
+    keywords:
+    - ubiquiti
+    - unifi
+    maintainers:
+    - email: jeff@billimek.com
+      name: billimek
+    - email: mike@quadra-tec.net
+      name: mcronce
+    name: unifi
+    sources:
+    - https://github.com/jacobalberty/unifi-docker
+    urls:
+    - https://github.com/htuomola/helm-charts/releases/download/unifi-5.1.3/unifi-5.1.3.tgz
+    version: 5.1.3
   - annotations:
       artifacthub.io/changes: |-
         - kind: changed
@@ -116,4 +179,4 @@ entries:
     urls:
     - https://github.com/htuomola/helm-charts/releases/download/unifi-5.1.2/unifi-5.1.2.tgz
     version: 5.1.2
-generated: "2023-10-08T10:05:51.895791522Z"
+generated: "2023-10-08T10:08:29.294575338Z"
