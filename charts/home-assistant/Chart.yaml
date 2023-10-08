@@ -3,7 +3,7 @@ apiVersion: v2
 appVersion: 2022.5.4
 description: Home Assistant
 name: home-assistant
-version: 14.0.0
+version: 14.0.1
 kubeVersion: ">=1.16.0-0"
 keywords:
   - home-assistant
@@ -15,11 +15,11 @@ sources:
   - https://github.com/home-assistant/home-assistant
   - https://github.com/cdr/code-server
 maintainers:
-  - name: henrit
+  - name: htuomola
     email: htuomola@gmail.com
 dependencies:
   - name: common
-    repository: https://library-charts.k8s-at-home.com
+    repository: https://htuomola.github.io/helm-charts
     version: 4.5.2
 annotations:
   artifacthub.io/changes: |-

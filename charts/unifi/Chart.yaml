@@ -3,7 +3,7 @@ apiVersion: v2
 appVersion: v7.1.68
 description: Ubiquiti Network's Unifi Controller
 name: unifi
-version: 5.1.2
+version: 5.1.3
 keywords:
   - ubiquiti
   - unifi
@@ -18,7 +18,7 @@ maintainers:
     email: mike@quadra-tec.net
 dependencies:
   - name: common
-    repository: https://library-charts.k8s-at-home.com
+    repository: https://htuomola.github.io/helm-charts
     version: 4.5.2
   - name: mongodb
     version: 12.1.22
