@@ -12,18 +12,18 @@ controller:
   # -- enable the controller.
   enabled: true
   # -- Set the controller type.
-  # Valid options are deployment, daemonset, statefulset or cronjob
+  # Valid options are deployment, daemonset or statefulset
   type: deployment
-  # -- Set annotations on the deployment/statefulset/daemonset/cronjob
+  # -- Set annotations on the deployment/statefulset/daemonset
   annotations: {}
-  # -- Set labels on the deployment/statefulset/daemonset/cronjob
+  # -- Set labels on the deployment/statefulset/daemonset
   labels: {}
   # -- Number of desired pods
   replicas: 1
   # -- Set the controller upgrade strategy
   # For Deployments, valid values are Recreate (default) and RollingUpdate.
   # For StatefulSets, valid values are OnDelete and RollingUpdate (default).
-  # DaemonSets/CronJobs ignore this.
+  # DaemonSets ignore this.
   strategy:
   rollingUpdate:
     # -- Set deployment RollingUpdate max unavailable
@@ -36,22 +36,6 @@ controller:
   revisionHistoryLimit: 3
   # -- Set statefulset podManagementPolicy, valid values are Parallel and OrderedReady (default).
   podManagementPolicy:
-  # -- Set Container restart policy.
-  # @default -- `Always`. When `controller.type` is `cronjob` it defaults to `Never`.
-  restartPolicy:
-  # -- CronJob configuration. Required only when using `controller.type: cronjob`.
-  # @default -- See below
-  cronjob:
-    # -- Specifies how to treat concurrent executions of a job that is created by this cron job, valid values are Allow, Forbid or Replace
-    concurrencyPolicy: Forbid
-    # -- Sets the CronJob time when to execute your jobs
-    schedule: "*/20 * * * *"
-    # -- The deadline in seconds for starting the job if it misses its scheduled time for any reason
-    startingDeadlineSeconds: 30
-    # -- The number of succesful Jobs to keep
-    successfulJobsHistory: 1
-    # -- The number of failed Jobs to keep
-    failedJobsHistory: 1
 
 image:
   # -- image repository
@@ -75,6 +59,16 @@ podAnnotations: {}
 # -- Set labels on the pod
 podLabels: {}
 
+# -- Add a Horizontal Pod Autoscaler
+# @default -- <disabled>
+autoscaling:
+  enabled: false
+  target:  # deploymentname
+  minReplicas:  # 1
+  maxReplicas:  # 100
+  targetCPUUtilizationPercentage:  # 80
+  targetMemoryUtilizationPercentage:  # 80
+
 serviceAccount:
   # -- Specifies whether a service account should be created
   create: false
@@ -89,27 +83,16 @@ serviceAccount:
 # -- Specifies whether a service account token should be automatically mounted.
 automountServiceAccountToken: true
 
-# -- Use this to populate secrets with the values you specify.
+# -- Use this to populate a secret with the values you specify.
 # Be aware that these values are not encrypted by default, and could therefore visible
 # to anybody with access to the values.yaml file.
-# Additional Secrets can be added by adding a dictionary key similar to the 'secret' object.
-# @default -- See below
-secrets:
-  secret:
-    # -- Enables or disables the Secret
-    enabled: false
-    # -- Labels to add to the Secret
-    labels: {}
-    # -- Annotations to add to the Secret
-    annotations: {}
-    # -- Secret stringData content. Helm template enabled.
-    stringData: {}
-      # foo: bar
+secret: {}
+  # PASSWORD: my-password
 
 # -- Configure configMaps for the chart here.
 # Additional configMaps can be added by adding a dictionary key similar to the 'config' object.
 # @default -- See below
-configMaps:
+configmap:
   config:
     # -- Enables or disables the configMap
     enabled: false
@@ -205,9 +188,6 @@ probes:
     enabled: true
     # -- Set this to `true` if you wish to specify your own livenessProbe
     custom: false
-    # -- sets the probe type when not using a custom probe
-    # @default -- "TCP"
-    type: TCP
     # -- The spec field contains the values for the default livenessProbe.
     # If you selected `custom: true`, this field holds the definition of the livenessProbe.
     # @default -- See below
@@ -224,9 +204,6 @@ probes:
     enabled: true
     # -- Set this to `true` if you wish to specify your own readinessProbe
     custom: false
-    # -- sets the probe type when not using a custom probe
-    # @default -- "TCP"
-    type: TCP
     # -- The spec field contains the values for the default readinessProbe.
     # If you selected `custom: true`, this field holds the definition of the readinessProbe.
     # @default -- See below
@@ -243,9 +220,6 @@ probes:
     enabled: true
     # -- Set this to `true` if you wish to specify your own startupProbe
     custom: false
-    # -- sets the probe type when not using a custom probe
-    # @default -- "TCP"
-    type: TCP
     # -- The spec field contains the values for the default startupProbe.
     # If you selected `custom: true`, this field holds the definition of the startupProbe.
     # @default -- See below
@@ -332,43 +306,6 @@ service:
         # [[ref]](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport)
         nodePort:
 
-        # -- Allow adding additional match labels
-        extraSelectorLabels: {}
-
-# -- Configure the ServiceMonitors for the chart here.
-# Additional ServiceMonitors can be added by adding a dictionary key similar to the 'main' ServiceMonitors.
-# @default -- See below
-serviceMonitor:
-  main:
-    # -- Enables or disables the serviceMonitor.
-    enabled: false
-
-    # -- Override the name suffix that is used for this serviceMonitor.
-    nameOverride:
-
-    # -- Provide additional annotations which may be required.
-    annotations: {}
-
-    # -- Provide additional labels which may be required.
-    labels: {}
-
-    # -- Configures a custom selector for the serviceMonitor, this takes precedence over
-    # specifying a service name.
-    # Helm templates can be used.
-    selector: {}
-
-    # -- Configures the target Service for the serviceMonitor. Helm templates can be used.
-    serviceName: '{{ include "htuomola.common.lib.chart.names.fullname" $ }}'
-
-    # -- Configures the endpoints for the serviceMonitor.
-    # @default -- See values.yaml
-    endpoints:
-      - port: http
-        scheme: http
-        path: /metrics
-        interval: 1m
-        scrapeTimeout: 10s
-
 # -- Configure the ingresses for the chart here.
 # Additional ingresses can be added by adding a dictionary key similar to the 'main' ingress.
 # @default -- See below
@@ -393,6 +330,7 @@ ingress:
     labels: {}
 
     # -- Set the ingressClass that is used for this ingress.
+    # Requires Kubernetes >=1.19
     ingressClassName:  # "nginx"
 
     ## Configure the hosts for the ingress
@@ -403,6 +341,7 @@ ingress:
         paths:
           -  # -- Path.  Helm template can be passed.
             path: /
+            # -- Ignored if not kubeVersion >= 1.14-0
             pathType: Prefix
             service:
               # -- Overrides the service name reference for this path
@@ -416,63 +355,9 @@ ingress:
     #    hosts:
     #      - chart-example.local
 
-# -- Configure the gateway routes for the chart here.
-# Additional routes can be added by adding a dictionary key similar to the 'main' route.
-# [[ref]](https://gateway-api.sigs.k8s.io/references/spec/#gateway.networking.k8s.io%2fv1alpha2)
-# @default -- See below
-route:
-  main:
-    # -- Enables or disables the route
-    enabled: false
-
-    # -- Set the route kind
-    # Valid options are GRPCRoute, HTTPRoute, TCPRoute, TLSRoute, UDPRoute
-    kind: HTTPRoute
-
-    # -- Override the name suffix that is used for this route.
-    nameOverride:
-
-    # -- Provide additional annotations which may be required.
-    annotations: {}
-
-    # -- Provide additional labels which may be required.
-    labels: {}
-
-    # -- Configure the resource the route attaches to.
-    parentRefs:
-    -  # Group of the referent resource.
-      group: gateway.networking.k8s.io
-      # Kind of the referent resource.
-      kind: Gateway
-      # Name of the referent resource
-      name:
-      # Namespace of the referent resource
-      namespace:
-      # Name of the section within the target resource.
-      sectionName:
-
-    # -- Host addresses
-    hostnames: []
-
-    # -- Configure rules for routing. Defaults to the primary service.
-    rules:
-      -  # -- Configure backends where matching requests should be sent.
-        backendRefs:
-        - group: ""
-          kind: Service
-          name:
-          namespace:
-          port:
-          weight: 1
-        ## Configure conditions used for matching incoming requests. Only for HTTPRoutes
-        matches:
-          - path:
-              type: PathPrefix
-              value: /
-
 # -- Configure persistence for the chart here.
 # Additional items can be added by adding a dictionary key similar to the 'config' key.
-# [[ref]](https://htuomola.github.io/helm-charts/docs/common-library/common-library-storage)
+# [[ref]](http://docs.k8s-at-home.com/our-helm-charts/common-library-storage)
 # @default -- See below
 persistence:
   # -- Default persistence for configuration files.
@@ -536,14 +421,10 @@ persistence:
 # -- Used in conjunction with `controller.type: statefulset` to create individual disks for each instance.
 volumeClaimTemplates: []
 # - name: data
-#   labels: {}
-#   annotations: {}
 #   mountPath: /data
 #   accessMode: "ReadWriteOnce"
 #   size: 1Gi
 # - name: backup
-#   labels: {}
-#   annotations: {}
 #   mountPath: /backup
 #   subPath: theSubPath
 #   accessMode: "ReadWriteOnce"
@@ -596,13 +477,42 @@ resources: {}
 addons:
 
   # -- The common chart supports adding a VPN add-on. It can be configured under this key.
+  # For more info, check out [our docs](http://docs.k8s-at-home.com/our-helm-charts/common-library-add-ons/#wireguard-vpn)
   # @default -- See values.yaml
   vpn:
     # -- Enable running a VPN in the pod to route traffic through a VPN
     enabled: false
 
-    # -- Specify the VPN type. Valid options are `gluetun`.
-    type: gluetun
+    # -- Specify the VPN type. Valid options are `openvpn`, `wireguard` and `gluetun`.
+    type: openvpn
+
+    # -- OpenVPN specific configuration
+    # @default -- See below
+    openvpn:
+      image:
+        # -- Specify the openvpn client image
+        repository: dperson/openvpn-client
+        # -- Specify the openvpn client image tag
+        tag: latest
+        # -- Specify the openvpn client image pull policy
+        pullPolicy: IfNotPresent
+
+      # -- Credentials to connect to the VPN Service (used with -a)
+      auth:  # "user;password"
+      # -- Optionally specify an existing secret that contains the credentials.
+      # Credentials should be stored under the `VPN_AUTH` key
+      authSecret:  # my-vpn-secret
+
+    # -- WireGuard specific configuration
+    # @default -- See below
+    wireguard:
+      image:
+        # -- Specify the WireGuard image
+        repository: ghcr.io/k8s-at-home/wireguard
+        # -- Specify the WireGuard image tag
+        tag: v1.0.20210914
+        # -- Specify the WireGuard image pull policy
+        pullPolicy: IfNotPresent
 
     # -- Gluetun specific configuration
     # -- Make sure to read the [documentation](https://github.com/qdm12/gluetun/wiki) to see how to configure this addon!
@@ -612,7 +522,7 @@ addons:
         # -- Specify the Gluetun image
         repository: docker.io/qmcgaw/gluetun
         # -- Specify the Gluetun image tag
-        tag: v3.32.0
+        tag: v3.30.0
         # -- Specify the Gluetun image pull policy
         pullPolicy: IfNotPresent
 
@@ -699,7 +609,7 @@ addons:
         #     protocol: TCP
 
   # -- The common library supports adding a code-server add-on to access files. It can be configured under this key.
-  # For more info, check out [our docs](https://htuomola.github.io/helm-charts/docs/common-library/common-library-add-ons/##code-server)
+  # For more info, check out [our docs](http://docs.k8s-at-home.com/our-helm-charts/common-library-add-ons/#code-server)
   # @default -- See values.yaml
   codeserver:
     # -- Enable running a code-server container in the pod
@@ -709,7 +619,7 @@ addons:
       # -- Specify the code-server image
       repository: ghcr.io/coder/code-server
       # -- Specify the code-server image tag
-      tag: 4.8.3
+      tag: 4.5.1
       # -- Specify the code-server image pull policy
       pullPolicy: IfNotPresent
 
@@ -756,7 +666,7 @@ addons:
           port: 12321
           enabled: true
           protocol: TCP
-          targetPort: 12321
+          targetPort: codeserver
           ## Specify the nodePort value for the LoadBalancer and NodePort service types.
           ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
           ##
@@ -775,17 +685,57 @@ addons:
       labels: {}
 
       # -- Set the ingressClass that is used for this ingress.
+      # Requires Kubernetes >=1.19
       ingressClassName:  # "nginx"
 
       hosts:
         - host: code.chart-example.local
           paths:
             - path: /
+              # Ignored if not kubeVersion >= 1.14-0
               pathType: Prefix
       tls: []
       #  - secretName: chart-example-tls
       #    hosts:
       #      - code.chart-example.local
+
+    securityContext:
+      runAsUser: 0
+
+  # -- The common library supports adding a promtail add-on to to access logs and ship them to loki. It can be configured under this key.
+  # @default -- See values.yaml
+  promtail:
+    # -- Enable running a promtail container in the pod
+    enabled: false
+
+    image:
+      # -- Specify the promtail image
+      repository: docker.io/grafana/promtail
+      # -- Specify the promtail image tag
+      tag: 2.6.1
+      # -- Specify the promtail image pull policy
+      pullPolicy: IfNotPresent
+
+    # -- Set any environment variables for promtail here
+    env: {}
+
+    # -- Set promtail command line arguments
+    args: []
+
+    # -- The URL to Loki
+    loki: ""
+
+    # -- The paths to logs on the volume
+    logs: []
+    # - name: log
+    #   path: /config/logs/*.log
+
+    # -- Specify a list of volumes that get mounted in the promtail container.
+    # At least 1 volumeMount is required!
+    volumeMounts: []
+    # - name: config
+    #   mountPath: /config
+    #   readOnly: true
 
     securityContext:
       runAsUser: 0
@@ -800,7 +750,7 @@ addons:
       # -- Specify the netshoot image
       repository: ghcr.io/nicolaka/netshoot
       # -- Specify the netshoot image tag
-      tag: v0.8
+      tag: v0.7
       # -- Specify the netshoot image pull policy
       pullPolicy: IfNotPresent
 

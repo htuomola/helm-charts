@@ -1,12 +1,12 @@
 {{/*
 Volumes included by the controller.
 */}}
-{{- define "bjw-s.common.lib.controller.volumes" -}}
+{{- define "common.controller.volumes" -}}
 {{- range $index, $persistence := .Values.persistence }}
 {{- if $persistence.enabled }}
 - name: {{ $index }}
   {{- if eq (default "pvc" $persistence.type) "pvc" }}
-    {{- $pvcName := (include "bjw-s.common.lib.chart.names.fullname" $) -}}
+    {{- $pvcName := (include "common.names.fullname" $) -}}
     {{- if $persistence.existingClaim }}
       {{- /* Always prefer an existingClaim if that is set */}}
       {{- $pvcName = $persistence.existingClaim -}}
@@ -14,10 +14,10 @@ Volumes included by the controller.
       {{- /* Otherwise refer to the PVC name */}}
       {{- if $persistence.nameOverride -}}
         {{- if not (eq $persistence.nameOverride "-") -}}
-          {{- $pvcName = (printf "%s-%s" (include "bjw-s.common.lib.chart.names.fullname" $) $persistence.nameOverride) -}}
+          {{- $pvcName = (printf "%s-%s" (include "common.names.fullname" $) $persistence.nameOverride) -}}
         {{- end -}}
       {{- else -}}
-        {{- $pvcName = (printf "%s-%s" (include "bjw-s.common.lib.chart.names.fullname" $) $index) -}}
+        {{- $pvcName = (printf "%s-%s" (include "common.names.fullname" $) $index) -}}
       {{- end -}}
     {{- end }}
   persistentVolumeClaim:
@@ -61,7 +61,7 @@ Volumes included by the controller.
   {{- else if eq $persistence.type "custom" }}
     {{- toYaml $persistence.volumeSpec | nindent 2 }}
   {{- else }}
-    {{- fail (printf "Not a valid persistence.type (%s)" $persistence.type) }}
+    {{- fail (printf "Not a valid persistence.type (%s)" .Values.persistence.type) }}
   {{- end }}
 {{- end }}
 {{- end }}

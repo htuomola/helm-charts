@@ -21,10 +21,9 @@ Include this chart as a dependency in your `Chart.yaml` e.g.
 # Chart.yaml
 dependencies:
 - name: common
-  version: {{ template "chart.version" . }}
+  version: 4.5.1
   repository: {{ template "custom.helm.url" }}
 ```
 
-For more information, take a look at the [Docs](http://htuomola.github.io/helm-charts/docs/common-library/introduction/).
+For more information, take a look at the [Docs](http://docs.k8s-at-home.com/our-helm-charts/common-library/).
 {{- end -}}
-{{ "" }}

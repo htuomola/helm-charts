@@ -1,10 +1,10 @@
 {{/*
-The gluetun sidecar container to be inserted.
+The OpenVPN sidecar container to be inserted.
 */}}
-{{- define "common.addon.gluetun.container" -}}
-name: gluetun
-image: "{{ .Values.addons.vpn.gluetun.image.repository }}:{{ .Values.addons.vpn.gluetun.image.tag }}"
-imagePullPolicy: {{ .Values.addons.vpn.gluetun.pullPolicy }}
+{{- define "common.addon.openvpn.container" -}}
+name: openvpn
+image: "{{ .Values.addons.vpn.openvpn.image.repository }}:{{ .Values.addons.vpn.openvpn.image.tag }}"
+imagePullPolicy: {{ .Values.addons.vpn.openvpn.pullPolicy }}
 {{- with .Values.addons.vpn.securityContext }}
 securityContext:
   {{- toYaml . | nindent 2 }}
@@ -21,21 +21,30 @@ envFrom:
 args:
   {{- . | toYaml | nindent 2 }}
 {{- end }}
+{{- if or .Values.addons.vpn.openvpn.auth .Values.addons.vpn.openvpn.authSecret }}
+envFrom:
+  - secretRef:
+    {{- if .Values.addons.vpn.openvpn.authSecret }}
+      name: {{ .Values.addons.vpn.openvpn.authSecret }}
+    {{- else }}
+      name: {{ include "common.names.fullname" . }}-openvpn
+    {{- end }}
+{{- end }}
 {{- if or .Values.addons.vpn.configFile .Values.addons.vpn.configFileSecret .Values.addons.vpn.scripts.up .Values.addons.vpn.scripts.down .Values.addons.vpn.additionalVolumeMounts .Values.persistence.shared.enabled }}
 volumeMounts:
 {{- if or .Values.addons.vpn.configFile .Values.addons.vpn.configFileSecret }}
   - name: vpnconfig
-    mountPath: /gluetun/config.conf
+    mountPath: /vpn/vpn.conf
     subPath: vpnConfigfile
 {{- end }}
 {{- if .Values.addons.vpn.scripts.up }}
   - name: vpnscript
-    mountPath: /gluetun/scripts/up.sh
+    mountPath: /vpn/up.sh
     subPath: up.sh
 {{- end }}
 {{- if .Values.addons.vpn.scripts.down }}
   - name: vpnscript
-    mountPath: /gluetun/scripts/down.sh
+    mountPath: /vpn/down.sh
     subPath: down.sh
 {{- end }}
 {{- if .Values.persistence.shared.enabled }}

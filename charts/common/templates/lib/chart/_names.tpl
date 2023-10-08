@@ -1,5 +1,5 @@
 {{/* Expand the name of the chart */}}
-{{- define "bjw-s.common.lib.chart.names.name" -}}
+{{- define "common.names.name" -}}
   {{- $globalNameOverride := "" -}}
   {{- if hasKey .Values "global" -}}
     {{- $globalNameOverride = (default $globalNameOverride .Values.global.nameOverride) -}}
@@ -12,8 +12,8 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "bjw-s.common.lib.chart.names.fullname" -}}
-  {{- $name := include "bjw-s.common.lib.chart.names.name" . -}}
+{{- define "common.names.fullname" -}}
+  {{- $name := include "common.names.name" . -}}
   {{- $globalFullNameOverride := "" -}}
   {{- if hasKey .Values "global" -}}
     {{- $globalFullNameOverride = (default $globalFullNameOverride .Values.global.fullnameOverride) -}}
@@ -31,15 +31,28 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/* Create chart name and version as used by the chart label */}}
-{{- define "bjw-s.common.lib.chart.names.chart" -}}
+{{- define "common.names.chart" -}}
   {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/* Create the name of the ServiceAccount to use */}}
-{{- define "bjw-s.common.lib.chart.names.serviceAccountName" -}}
+{{- define "common.names.serviceAccountName" -}}
   {{- if .Values.serviceAccount.create -}}
-    {{- default (include "bjw-s.common.lib.chart.names.fullname" .) .Values.serviceAccount.name -}}
+    {{- default (include "common.names.fullname" .) .Values.serviceAccount.name -}}
   {{- else -}}
     {{- default "default" .Values.serviceAccount.name -}}
+  {{- end -}}
+{{- end -}}
+
+{{/* Return the properly cased version of the controller type */}}
+{{- define "common.names.controllerType" -}}
+  {{- if eq .Values.controller.type "deployment" -}}
+    {{- print "Deployment" -}}
+  {{- else if eq .Values.controller.type "daemonset" -}}
+    {{- print "DaemonSet" -}}
+  {{- else if eq .Values.controller.type "statefulset"  -}}
+    {{- print "StatefulSet" -}}
+  {{- else -}}
+    {{- fail (printf "Not a valid controller.type (%s)" .Values.controller.type) -}}
   {{- end -}}
 {{- end -}}

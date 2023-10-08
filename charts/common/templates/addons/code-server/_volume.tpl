@@ -1,15 +1,17 @@
 {{/*
 The volume (referencing git deploykey) to be inserted into additionalVolumes.
 */}}
-{{- define "bjw-s.common.addon.codeserver.deployKeyVolumeSpec" -}}
+{{- define "common.addon.codeserver.deployKeyVolumeSpec" -}}
+{{- if or .Values.addons.codeserver.git.deployKey .Values.addons.codeserver.git.deployKeyBase64 .Values.addons.codeserver.git.deployKeySecret }}
 secret:
   {{- if .Values.addons.codeserver.git.deployKeySecret }}
   secretName: {{ .Values.addons.codeserver.git.deployKeySecret }}
   {{- else }}
-  secretName: {{ include "bjw-s.common.lib.chart.names.fullname" . }}-addon-codeserver-deploykey
+  secretName: {{ include "common.names.fullname" . }}-deploykey
   {{- end }}
-  defaultMode: {{ "0400" | toDecimal }}
+  defaultMode: 256
   items:
     - key: id_rsa
       path: id_rsa
+{{- end -}}
 {{- end -}}
